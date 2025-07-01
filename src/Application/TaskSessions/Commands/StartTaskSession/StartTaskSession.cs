@@ -25,11 +25,13 @@ public class StartTaskSessionCommandHandler : IRequestHandler<StartTaskSessionCo
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
+    private readonly TimeProvider _timeProvider;
 
-    public StartTaskSessionCommandHandler(IApplicationDbContext context, IUser user)
+    public StartTaskSessionCommandHandler(IApplicationDbContext context, IUser user, TimeProvider timeProvider)
     {
         _context = context;
         _user = user;
+        _timeProvider = timeProvider;
     }
 
     public async Task<bool> Handle(StartTaskSessionCommand request, CancellationToken cancellationToken)
@@ -50,7 +52,7 @@ public class StartTaskSessionCommandHandler : IRequestHandler<StartTaskSessionCo
         var newTaskSession = new TaskSession
         {
             TaskId = task.Id,
-            StartDateTime = DateTimeOffset.UtcNow,
+            StartDateTime = _timeProvider.GetUtcNow(),
             EndDateTime = null
         };
 

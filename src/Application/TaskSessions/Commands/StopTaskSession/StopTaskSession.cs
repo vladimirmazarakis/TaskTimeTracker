@@ -24,11 +24,13 @@ public class StopTaskSessionCommandHandler : IRequestHandler<StopTaskSessionComm
 {
     private readonly IApplicationDbContext _context;
     private readonly IUser _user;
+    private readonly TimeProvider _timeProvider;
 
-    public StopTaskSessionCommandHandler(IApplicationDbContext context, IUser user)
+    public StopTaskSessionCommandHandler(IApplicationDbContext context, IUser user, TimeProvider timeProvider)
     {
         _context = context;
         _user = user;
+        _timeProvider = timeProvider;
     }
 
     public async Task<bool> Handle(StopTaskSessionCommand request, CancellationToken cancellationToken)
@@ -49,7 +51,7 @@ public class StopTaskSessionCommandHandler : IRequestHandler<StopTaskSessionComm
             throw new NoStartedTaskSessionWasFoundException(request.TaskId);
         }
 
-        taskSession.EndDateTime = DateTimeOffset.UtcNow;
+        taskSession.EndDateTime = _timeProvider.GetUtcNow();
 
         await _context.SaveChangesAsync(cancellationToken);
 
