@@ -13,4 +13,5 @@ public class TaskItem : BaseAuditableEntity
     public string? Description { get; set; }
     public string ApplicationUserId { get; set; } = default!;
     public bool IsCompleted { get; set; }
+    public IEnumerable<TaskSession> TaskSessions { get; set; } = default!;
 }
