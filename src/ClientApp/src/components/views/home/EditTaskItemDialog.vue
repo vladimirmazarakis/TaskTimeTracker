@@ -8,9 +8,10 @@ import {
   type TaskItemsInjectObject,
   type UpdateTaskItemDto,
 } from '@/lib/tasks'
+import { getToastGroup } from '@/lib/utils'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
-import { Dialog, InputText, Button, Textarea, Select } from 'primevue'
+import { Dialog, InputText, Button, Textarea, Select, useToast } from 'primevue'
 import { watchEffect, ref, watch, inject } from 'vue'
 
 let props = defineProps<{ visible: boolean; taskItem: TaskItemDto }>()
@@ -46,6 +47,8 @@ const priorities = ref([
 
 const resolver = zodResolver(taskCreateUpdateSchema)
 
+const toast = useToast()
+
 const taskItemsObj: TaskItemsInjectObject = inject(
   'taskItemsObj',
   taskItemsInjectObjectDefaultValue,
@@ -66,6 +69,12 @@ const formSubmit = (event: FormSubmitEvent<Record<string, any>>) => {
   updateTask(updateTaskItemDto).then(() => {
     taskItemsObj.refreshTaskItems()
     dialogVisible.value = false
+    toast.add({
+      severity: 'success',
+      summary: 'Successfully updated task.',
+      life: 3000,
+      group: getToastGroup(),
+    })
   })
 }
 
@@ -84,12 +93,12 @@ const customResolve = (e: FormResolverOptions) => {
 </script>
 
 <template>
-  <Dialog modal v-model:visible="dialogVisible" :header="dialogHeader">
+  <Dialog modal v-model:visible="dialogVisible" class="min-w-80" :header="dialogHeader">
     <Form
       @submit="formSubmit"
       :resolver="customResolve"
       v-slot="$form"
-      class="flex flex-col gap-y-3 w-80"
+      class="flex flex-col gap-y-3 w-full"
     >
       <div class="flex w-full flex-col gap-y-1">
         <label for="name">Task name</label>

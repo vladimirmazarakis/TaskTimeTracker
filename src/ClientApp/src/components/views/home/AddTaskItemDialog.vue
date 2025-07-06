@@ -7,13 +7,16 @@ import {
   type TaskItemDto,
   type TaskItemsInjectObject,
 } from '@/lib/tasks'
+import { getToastGroup } from '@/lib/utils'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { zodResolver } from '@primevue/forms/resolvers/zod'
-import { Dialog, InputText, Button, Textarea, Select, Message } from 'primevue'
+import { Dialog, InputText, Button, Textarea, Select, Message, useToast } from 'primevue'
 import { watchEffect, ref, watch, inject } from 'vue'
 
 let props = defineProps<{ visible: boolean }>()
 let emit = defineEmits(['dialog-visibility-changed'])
+
+const toast = useToast()
 
 let dialogVisible = ref(props.visible)
 let taskItemName = ref('New Task')
@@ -66,6 +69,12 @@ const formSubmit = (event: FormSubmitEvent<Record<string, any>>) => {
   createTask(taskItem).then(() => {
     taskItemsObj.refreshTaskItems()
     dialogVisible.value = false
+    toast.add({
+      severity: 'success',
+      summary: 'Successfully added new task.',
+      life: 3000,
+      group: getToastGroup(),
+    })
   })
 }
 
@@ -84,12 +93,12 @@ const customResolve = (e: FormResolverOptions) => {
 </script>
 
 <template>
-  <Dialog modal v-model:visible="dialogVisible" :header="dialogHeader">
+  <Dialog modal v-model:visible="dialogVisible" class="min-w-80" :header="dialogHeader">
     <Form
       :resolver="customResolve"
       @submit="formSubmit"
       v-slot="$form"
-      class="flex flex-col gap-y-3 w-80"
+      class="flex flex-col gap-y-3 w-full"
     >
       <div class="flex w-full flex-col gap-y-1">
         <label for="name">Task name</label>

@@ -58,6 +58,12 @@ const completeButton = () => {
   if (!taskItemRef.value.isCompleted) {
     completeTask(taskItemRef.value.id).then((data) => {
       taskItemRef.value = data
+      toast.add({
+        severity: 'success',
+        summary: 'Task completed.',
+        life: 3000,
+        group: getToastGroup(),
+      })
     })
   } else {
     incompleteTask(taskItemRef.value.id).then((data) => {
@@ -83,7 +89,6 @@ const deleteButton = (event: any) => {
         toast.add({
           severity: 'error',
           summary: 'Deleted',
-          detail: 'Deleted task.',
           life: 5000,
           group: getToastGroup(),
         })

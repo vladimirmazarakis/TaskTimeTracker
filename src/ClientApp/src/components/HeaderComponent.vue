@@ -6,6 +6,7 @@ import { Button, useToast } from 'primevue'
 import { useRouter } from 'vue-router'
 import AddTaskItemDialog from './views/home/AddTaskItemDialog.vue'
 import { ref } from 'vue'
+import TrackTimeDialog from './views/home/taskSessions/TrackTimeDialog.vue'
 
 const toast = useToast()
 const router = useRouter()
@@ -25,6 +26,7 @@ const signOutClick = () => {
 }
 
 let addTaskDialogVisible = ref(false)
+let trackDialogVisible = ref(false)
 </script>
 
 <template>
@@ -41,7 +43,13 @@ let addTaskDialogVisible = ref(false)
         label="New Task"
         @click="addTaskDialogVisible = !addTaskDialogVisible"
       ></Button>
-      <Button label="Track Time"></Button>
+      <TrackTimeDialog
+        :visible="trackDialogVisible"
+        @dialog-visibility-changed="
+          (dialogVisibility: boolean) => (trackDialogVisible = dialogVisibility)
+        "
+      />
+      <Button @click="trackDialogVisible = !trackDialogVisible" label="Track Time"></Button>
     </div>
     <Button severity="warn" @click="signOutClick" label="Sign out"></Button>
   </div>

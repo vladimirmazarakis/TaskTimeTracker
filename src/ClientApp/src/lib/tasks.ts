@@ -105,6 +105,30 @@ type TaskItemsInjectObject = {
   refreshTaskItems: () => void
 }
 
+async function getTaskSessionDuration(taskId: number) {
+  const resp = await webClient.get(`/api/TaskSessions/${taskId}`)
+  if (resp.status === 200) {
+    return resp.data as number
+  }
+  return 0
+}
+
+async function getTotalTaskSessionDuration(taskId: number) {
+  const resp = await webClient.get(`/api/TaskSessions/total/${taskId}`)
+  if (resp.status === 200) {
+    return resp.data as number
+  }
+  return 0
+}
+
+async function startTaskSession(taskId: number) {
+  await webClient.post(`/api/TaskSessions/start/${taskId}`)
+}
+
+async function stopTaskSession(taskId: number) {
+  await webClient.post(`/api/TaskSessions/stop/${taskId}`)
+}
+
 export {
   TaskItemPriority,
   type TaskItemDto,
@@ -119,4 +143,8 @@ export {
   taskItemsInjectObjectDefaultValue,
   updateTask,
   type UpdateTaskItemDto,
+  getTaskSessionDuration,
+  startTaskSession,
+  stopTaskSession,
+  getTotalTaskSessionDuration,
 }
