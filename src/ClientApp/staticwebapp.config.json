@@ -1,8 +1,5 @@
 {
   "platform": {
     "apiRuntime": "node:20"
-  },
-  "build": {
-    "commands": ["npm install", "npm run build"]
   }
 }
