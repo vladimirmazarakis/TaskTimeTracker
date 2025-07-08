@@ -50,6 +50,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           NODE_VERSION: 20
+          VITE_API_HOST: ${{ secrets.VITE_API_HOST }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
