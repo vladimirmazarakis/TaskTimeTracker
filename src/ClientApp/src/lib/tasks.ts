@@ -129,20 +129,6 @@ async function stopTaskSession(taskId: number) {
   await webClient.post(`/api/TaskSessions/stop/${taskId}`)
 }
 
-type TaskSessionDto = {
-  startDate: Date
-  endDate: Date
-  totalDuration: number
-}
-
-async function getTaskSessionsHistory(taskId: number) {
-  const resp = await webClient.get(`/api/TaskSessions/history/${taskId}`)
-  if (resp.status === 200) {
-    return resp.data.taskSessions as TaskSessionDto[]
-  }
-  return []
-}
-
 export {
   TaskItemPriority,
   type TaskItemDto,
@@ -161,6 +147,4 @@ export {
   startTaskSession,
   stopTaskSession,
   getTotalTaskSessionDuration,
-  getTaskSessionsHistory,
-  type TaskSessionDto,
 }

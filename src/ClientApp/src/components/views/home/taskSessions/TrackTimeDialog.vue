@@ -3,18 +3,15 @@ import { inject, ref, watch, watchEffect } from 'vue'
 import { Button, Dialog, Select, useToast, type SelectChangeEvent } from 'primevue'
 import {
   getTaskSessionDuration,
-  getTaskSessionsHistory,
   getTotalTaskSessionDuration,
   startTaskSession,
   stopTaskSession,
   taskItemsInjectObjectDefaultValue,
   type TaskItemsInjectObject,
-  type TaskSessionDto,
 } from '@/lib/tasks'
 import { getToastGroup } from '@/lib/utils'
 import TimerComponent from '@/components/views/home/taskSessions/TimerComponent.vue'
-import TotalTimeSpentComponent from '@/components/views/home/taskSessions/TotalTimeSpentComponent.vue'
-import SessionHistoryComponent from '@/components/views/home/taskSessions/SessionHistoryComponent.vue'
+import TotalTimeSpentComponent from './TotalTimeSpentComponent.vue'
 
 let props = defineProps<{ visible: boolean }>()
 let emit = defineEmits(['dialog-visibility-changed'])
@@ -33,8 +30,6 @@ watchEffect(() => {
 })
 
 let tasks = ref<any>([])
-
-let taskSessions = ref<TaskSessionDto[]>()
 
 let selectedTask = ref<number | null>(null)
 
@@ -66,7 +61,6 @@ watch(dialogVisible, () => {
     totalTime.value = 0
     isStarted.value = false
     clearInterval(timer.value)
-    taskSessions.value = []
   }
 })
 
@@ -78,13 +72,7 @@ let timer = ref(0)
 watch(isStarted, () => {
   if (isStarted.value) {
     clearInterval(timer.value)
-    const realStartTime = Date.now() / 1000 // Current time in seconds
-    const initialDuration = curDuration.value
-
-    timer.value = setInterval(() => {
-      const elapsed = Math.floor(Date.now() / 1000 - realStartTime)
-      curDuration.value = initialDuration + elapsed
-    }, 1000)
+    timer.value = setInterval(() => curDuration.value++, 1000)
   } else {
     clearInterval(timer.value)
   }
@@ -100,7 +88,6 @@ const selectedChange = async (event: SelectChangeEvent) => {
 
   curDuration.value = await getTaskSessionDuration(selectedTask.value)
   totalTime.value = await getTotalTaskSessionDuration(selectedTask.value)
-  taskSessions.value = await getTaskSessionsHistory(selectedTask.value)
   if (curDuration.value > 0) {
     isStarted.value = true
   }
@@ -138,21 +125,15 @@ const stopSession = async () => {
   }
   await stopTaskSession(selectedTask.value)
   totalTime.value = await getTotalTaskSessionDuration(selectedTask.value)
-  taskSessions.value = await getTaskSessionsHistory(selectedTask.value)
-  curDuration.value = 0
   isStarted.value = false
 }
 </script>
 
 <template>
-  <Dialog
-    modal
-    v-model:visible="dialogVisible"
-    class="md:min-w-[570px] md:max-w-[570px] transition-all"
-    header="Time tracking"
-  >
+  <Dialog modal v-model:visible="dialogVisible" class="min-w-96" header="Time tracking">
     <div class="flex flex-col gap-y-4 w-full">
       <TimerComponent :duration="curDuration" />
+      <TotalTimeSpentComponent :duration="totalTime" />
       <Select
         v-if="tasks.length > 0"
         :options="tasks"
@@ -178,11 +159,6 @@ const stopSession = async () => {
           label="Stop Session"
         ></Button>
       </div>
-      <TotalTimeSpentComponent v-if="totalTime" :duration="totalTime" />
-      <SessionHistoryComponent
-        v-if="taskSessions && taskSessions.length > 0"
-        :taskSessions="taskSessions"
-      />
     </div>
   </Dialog>
 </template>
