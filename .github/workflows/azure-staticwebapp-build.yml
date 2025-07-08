@@ -23,7 +23,7 @@ jobs:
       # 2) Build your Vue app
       - name: Install & Build
         run: |
-          cd src/ClientApp
+          cd /src/ClientApp
           npm ci
           npm run build
 
@@ -35,7 +35,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
           skip_app_build: true
-          app_artifact_location: "src/ClientApp/dist"
+          app_location: "/src/ClientApp"
+          output_location: "/dist"
           api_location: ""
-          # (optional) if you still want to pass the config to your APIs:
-          config_file_location: "src/ClientApp/"
+          config_file_location: "/src/ClientApp/"
