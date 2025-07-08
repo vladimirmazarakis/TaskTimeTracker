@@ -38,4 +38,4 @@ jobs:
           app_artifact_location: "src/ClientApp/dist"
           api_location: ""
           # (optional) if you still want to pass the config to your APIs:
-          config_file_location: "src/ClientApp/public/staticwebapp.config.json"
+          config_file_location: "src/ClientApp/"
