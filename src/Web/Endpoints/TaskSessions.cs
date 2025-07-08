@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskTimeTracker.Application.TaskSessions.Commands.StartTaskSession;
 using TaskTimeTracker.Application.TaskSessions.Commands.StopTaskSession;
+using TaskTimeTracker.Application.TaskSessions.Queries;
 using TaskTimeTracker.Application.TaskSessions.Queries.GetTaskSessionDuration;
+using TaskTimeTracker.Application.TaskSessions.Queries.GetTaskSessionsHistory;
 using TaskTimeTracker.Application.TaskSessions.Queries.GetTaskSessionsTotalDuration;
 using TaskTimeTracker.Domain.Exceptions.TaskItem;
 using TaskTimeTracker.Domain.Exceptions.TaskSession;
@@ -19,7 +21,8 @@ public class TaskSessions : EndpointGroupBase
             .MapPost(StartTaskSession, "/start/{taskId}")
             .MapPost(StopTaskSession, "/stop/{taskId}")
             .MapGet(GetTaskSessionDuration, "{taskId}")
-            .MapGet(GetTaskSessionsTotalDuration, "/total/{taskId}");
+            .MapGet(GetTaskSessionsTotalDuration, "/total/{taskId}")
+            .MapGet(GetTaskSessionsHistory, "/history/{taskId}");
     }
 
     public async Task<Results<Ok, BadRequest<string>, NotFound<string>>> StartTaskSession(ISender sender, [FromRoute] int taskId)
@@ -93,5 +96,17 @@ public class TaskSessions : EndpointGroupBase
 
         var duration = await sender.Send(query);
         return TypedResults.Ok(duration);
+    }
+
+    public async Task<Ok<TaskSessionsDto>> GetTaskSessionsHistory(ISender sender, [FromRoute] int taskId)
+    {
+        var query = new GetTaskSessionsHistoryQuery
+        {
+            TaskId = taskId
+        };
+
+        var taskSessions = await sender.Send(query);
+
+        return TypedResults.Ok(taskSessions);
     }
 }
