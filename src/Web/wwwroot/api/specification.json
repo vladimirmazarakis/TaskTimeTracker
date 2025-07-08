@@ -322,6 +322,43 @@
         ]
       }
     },
+    "/api/TaskSessions/history/{taskId}": {
+      "get": {
+        "tags": [
+          "TaskSessions"
+        ],
+        "operationId": "GetTaskSessionsHistory",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskSessionsDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
     "/api/Users/register": {
       "post": {
         "tags": [
@@ -903,6 +940,36 @@
           },
           "isCompleted": {
             "type": "boolean"
+          }
+        }
+      },
+      "TaskSessionsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskSessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskSessionDto"
+            }
+          }
+        }
+      },
+      "TaskSessionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "totalDuration": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

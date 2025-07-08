@@ -21,7 +21,7 @@ webClient.interceptors.response.use(
   (resp) => resp,
   async function (error) {
     const response = error.response
-    if (response?.status === 401) {
+    if (response?.status === 401 || error?.code === 'ERR_NETWORK') {
       const refreshToken = localStorage.getItem('refreshToken')
       if (!refreshToken) {
         clearAuthentication()
@@ -34,9 +34,11 @@ webClient.interceptors.response.use(
 
       if (status === 200) {
         webClient.defaults.headers['Authorization'] = `Bearer ${data.accessToken}`
+        error.config.headers['Authorization'] = `Bearer ${data.accessToken}`
         localStorage.setItem('refreshToken', data.refreshToken)
         localStorage.setItem('accessToken', data.accessToken)
-        return await axios(error.config)
+        let axiosRes = await webClient.request(error.config)
+        return axiosRes
       }
     }
 
