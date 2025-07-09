@@ -28,20 +28,23 @@ webClient.interceptors.response.use(
         return error
       }
 
-      const { status, data } = await webClient.post('/api/Users/refresh', {
-        refreshToken: refreshToken,
-      })
+      try {
+        const { status, data } = await webClient.post('/api/Users/refresh', {
+          refreshToken: refreshToken,
+        })
 
-      if (status === 200) {
-        webClient.defaults.headers['Authorization'] = `Bearer ${data.accessToken}`
-        error.config.headers['Authorization'] = `Bearer ${data.accessToken}`
-        localStorage.setItem('refreshToken', data.refreshToken)
-        localStorage.setItem('accessToken', data.accessToken)
-        let axiosRes = await webClient.request(error.config)
-        return axiosRes
+        if (status === 200) {
+          webClient.defaults.headers['Authorization'] = `Bearer ${data.accessToken}`
+          error.config.headers['Authorization'] = `Bearer ${data.accessToken}`
+          localStorage.setItem('refreshToken', data.refreshToken)
+          localStorage.setItem('accessToken', data.accessToken)
+          let axiosRes = await webClient.request(error.config)
+          return axiosRes
+        }
+      } catch {
+        return error
       }
     }
-
     return error
   },
 )
