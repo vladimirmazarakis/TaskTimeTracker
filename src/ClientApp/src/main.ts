@@ -15,7 +15,6 @@ import ResetPasswordView from './views/auth/ResetPasswordView.vue'
 import ConfirmAccountView from './views/auth/ConfirmAccountView.vue'
 import AppLayoutView from './views/AppLayoutView.vue'
 import { ConfirmationService } from 'primevue'
-import styles from '@/assets/main.css'
 
 const app = createApp(App)
 

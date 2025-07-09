@@ -83,17 +83,5 @@ public class ApplicationDbContextInitialiser
         {
             await _roleManager.CreateAsync(administratorRole);
         }
-
-        // Default users
-        var administrator = new ApplicationUser { UserName = "administrator@localhost.com", Email = "administrator@localhost" };
-
-        if (_userManager.Users.All(u => u.UserName != administrator.UserName))
-        {
-            await _userManager.CreateAsync(administrator, "Administrator1!");
-            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-            {
-                await _userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
-            }
-        }
     }
 }

@@ -52,6 +52,7 @@ watch(dialogVisible, () => {
     })
     dialogVisible.value = false
   } else if (taskItemsObj.taskItems.value) {
+    tasks.value = []
     for (const taskItem of taskItemsObj?.taskItems?.value) {
       tasks.value.push({
         name: taskItem.name,
